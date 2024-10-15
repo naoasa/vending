@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "debug"
-
 # 自動販売機の責務
 class VendingMachine
   def initialize(name)
@@ -106,6 +104,14 @@ class PapercupCoffee < Item
   end
 end
 
+# スナック菓子の責務
+class Snack < Item
+  def initialize # 引数なし
+    @name = "potato chips"
+    @price = 150
+  end
+end
+
 # 実行
 vending_machine = VendingMachine.new("サントリー")
 cola = Drink.new("cola")
@@ -118,5 +124,10 @@ ice_cup_coffee = PapercupCoffee.new("ice")
 puts vending_machine.press_button(ice_cup_coffee)
 vending_machine.deposit_coin(100)
 puts vending_machine.press_button(ice_cup_coffee)
-puts vending_machine.press_button(cola)
-puts vending_machine.press_button(cola)
+vending_machine.add_cup(1)
+puts vending_machine.press_button(ice_cup_coffee)
+potato_chips = Snack.new
+puts vending_machine.press_button(potato_chips)
+vending_machine.deposit_coin(100)
+vending_machine.deposit_coin(100)
+puts vending_machine.press_button(potato_chips)
