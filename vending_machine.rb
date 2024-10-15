@@ -26,13 +26,39 @@ class VendingMachine
     end
   end
 
-  def press_button(item) # 商品ボタンを押す
-    # 預り金が商品価格以上ある場合
+  def enough_deposit?(item)
+    # 預り金が足りている場合
     if @deposit >= item.price
-      @deposit -= item.price # 預り金を減らす
-      item.name # 商品を返す
+      true
     else
-      "お金が足りません"
+      false
+    end
+  end
+
+  def press_button(item) # 商品ボタンを押す
+    # 紙カップ商品には紙カップ在庫数の判定が必要
+    if item.class == PapercupCoffee # 紙カップ商品である場合
+      if @cups >= 1 && enough_deposit?(item) # 紙カップ在庫数が1以上 かつ 預り金が十分
+        # 紙カップを減らす
+        @cups -= 1
+        # 預り金を減らす
+        @deposit -= item.price
+        # 商品を返す
+        item.name
+      elsif @cups < 1 && enough_deposit?(item) # 紙カップ在庫数が1未満 かつ 預り金は十分
+        "紙カップの在庫が足りません。補充してください。"
+      else
+        "お金が足りません。100円を入れてください。"
+      end
+    else # 紙カップ商品ではない場合
+      if enough_deposit?(item) # お金が足りている場合
+        # 預り金を減らす
+        @deposit -= item.price
+        # 商品を返す
+        item.name
+      else # お金が不足の場合
+        "お金が足りません。100円を入れてください。"
+      end
     end
   end
 
@@ -88,4 +114,9 @@ vending_machine.deposit_coin(100)
 puts vending_machine.press_button(cola)
 vending_machine.deposit_coin(100)
 puts vending_machine.press_button(cola)
-vending_machine.add_cup(1)
+ice_cup_coffee = PapercupCoffee.new("ice")
+puts vending_machine.press_button(ice_cup_coffee)
+vending_machine.deposit_coin(100)
+puts vending_machine.press_button(ice_cup_coffee)
+puts vending_machine.press_button(cola)
+puts vending_machine.press_button(cola)
